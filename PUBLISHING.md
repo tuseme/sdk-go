@@ -9,11 +9,35 @@ Unlike Python, npm, NuGet, and Ruby, Go modules are generally published from the
 Users install directly from the module path:
 
 ```bash
-go get github.com/tuseme/sdk-go
+# inside an existing Go module
+go get github.com/tuseme/sdk-go@latest
 go get github.com/tuseme/sdk-go@v1.0.0
 ```
 
 Go resolves module versions from Git tags and serves them through the Go module proxy/cache ecosystem.
+
+### Important: `go get` requires a module context
+
+With modern Go, running `go get` outside a directory that has a `go.mod` returns:
+
+```text
+'go get' is no longer supported outside a module
+```
+
+That is expected behavior. To test/install as a dependency:
+
+```bash
+mkdir myapp && cd myapp
+go mod init example.com/myapp
+go get github.com/tuseme/sdk-go@latest
+```
+
+To verify remote availability without creating a module:
+
+```bash
+go list -m github.com/tuseme/sdk-go@latest
+go list -m github.com/tuseme/sdk-go@vX.Y.Z
+```
 
 ## Module identity (must match exactly)
 

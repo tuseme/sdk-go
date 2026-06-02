@@ -8,8 +8,18 @@ Official Go client for the [Tuseme SMS API](https://docs.tuseme.co.ke).
 
 ## Installation
 
+Initialize a Go module first (required by modern Go toolchains), then add the SDK:
+
 ```bash
-go get github.com/tuseme/sdk-go
+mkdir myapp && cd myapp
+go mod init example.com/myapp
+go get github.com/tuseme/sdk-go@latest
+```
+
+If you only want to verify availability without creating a module:
+
+```bash
+go list -m github.com/tuseme/sdk-go@latest
 ```
 
 ## Quick Start
