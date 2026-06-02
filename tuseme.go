@@ -27,10 +27,10 @@ import (
 )
 
 const (
-	DefaultBaseURL   = "https://api.tuseme.co.ke/api/v1"
-	DefaultTimeout   = 30 * time.Second
-	DefaultRetries   = 3
-	retryBackoff     = 500 * time.Millisecond
+	DefaultBaseURL = "https://api.tuseme.co.ke/api/v1"
+	DefaultTimeout = 30 * time.Second
+	DefaultRetries = 3
+	retryBackoff   = 500 * time.Millisecond
 )
 
 // ── Types ───────────────────────────────────────────────────
@@ -109,9 +109,9 @@ type Client struct {
 
 type Option func(*Client)
 
-func WithBaseURL(url string) Option   { return func(c *Client) { c.baseURL = url } }
+func WithBaseURL(url string) Option      { return func(c *Client) { c.baseURL = url } }
 func WithTimeout(d time.Duration) Option { return func(c *Client) { c.httpClient.Timeout = d } }
-func WithRetries(n int) Option        { return func(c *Client) { c.maxRetries = n } }
+func WithRetries(n int) Option           { return func(c *Client) { c.maxRetries = n } }
 
 func NewClient(apiKey, apiSecret string, opts ...Option) *Client {
 	c := &Client{

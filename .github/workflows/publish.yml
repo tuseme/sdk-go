@@ -1,0 +1,54 @@
+name: Publish Go SDK
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git tag to publish (e.g. v1.0.0)
+        required: true
+        type: string
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+concurrency:
+  group: publish-go
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+
+      - name: Validate release tag
+        run: |
+          [[ "${RELEASE_TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]] \
+            || { echo "::error::Invalid tag: ${RELEASE_TAG}"; exit 1; }
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache-dependency-path: go.sum
+
+      - name: Verify module
+        run: |
+          go vet ./...
+          go test ./...
+
+      - name: Confirm proxy indexing
+        run: |
+          module=$(go list -m)
+          version="${RELEASE_TAG}"
+          echo "Module ${module}@${version} is published when this tag exists on GitHub."
+          echo "Verify shortly: https://pkg.go.dev/${module}@${version}"
